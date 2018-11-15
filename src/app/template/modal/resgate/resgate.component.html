@@ -8,19 +8,24 @@
         </button>
       </div>
       <div class="modal-body">
-        <label for="empresa">Tipo de Resgare</label>
-        <select class="custom-select" id="empresa" formControlName="empresa">
-            <option selected>Selecione o tipo de resgate...</option>
-            <option>Resgate Parcial</option>
-            <option>Resgate total</option>
+        <label for="tipoResgate">Selecione o Tipo de Resgate</label>
+        <select class="custom-select" id="tipoResgate" formControlName="empresa">
+          <option selected>Selecione o tipo de resgate...</option>
+          <option value="0">Resgate Parcial</option>
+          <option value="1">Resgate total</option>
         </select> 
         <p class="alerts" *ngIf="isFieldInvalid('empresa')">Informe a empresa vinculada.</p> 
       </div>
+      <form>
+        <div class="form-group" *ngIf="tipoResgate.values == 0">
+          <label for="enviarFormulario">Enviar formulário para resgate parcial</label>
+          <input type="file" class="form-control-file" id="enviarFormulario">
+        </div>
+      </form>
+      <hr>
       <p>
-        *O resgate está sujeito às regras contidas no artigo respeitando o prazo de carência de 36 meses.
         *Em caso de resgate total o plano será cancelado automaticamente.
       </p>
-      <hr>
     </div>
   </div>
 </div>
