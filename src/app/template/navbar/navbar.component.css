@@ -1,0 +1,15 @@
+.nav {
+    background-color: rgb(23, 55, 97);
+    border-bottom: white;
+}
+
+.text {
+    color: white;
+    margin-left: 10px;
+}
+
+.separator {
+    margin:0;
+    padding:0;
+    background-color: white;
+}

@@ -1,0 +1,36 @@
+<div class="back-menu">
+  <div class="wrapper">
+      <nav id="sidebar">
+          <div class="sidebar-header">
+              <div>
+                <img src="../../assets/img/usuario.png"  class="usuario" alt="Usuário foto">
+              </div>
+          </div>
+          <br>
+          <ul class="list-unstyled components menu-area">
+          <br>
+              <p class="usuario-name">Roberta Melo</p>
+              <p class="status">Situação: Ativo</p>
+              <hr>
+              <li class="active menu">
+                  <p>Plano: Tipo 1</p>
+                  <hr>
+                  <p>Empresa: Teste</p>
+                  <hr>
+                  <p>Saldo total: 15.000,00</p>
+                  <hr>
+                  <p>Data aposentadoria: 12/12/2050</p>
+                  <hr>
+                  <div class="row btn">
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalContribuicaoAdicional">Contribuição Adicional</button>
+                  </div>
+                  <div class="row btn">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalResgate">Resgate do Saldo disponível</button>
+                  </div>
+              </li>
+          </ul>
+      </nav>
+  </div>
+  <app-contribuicao-adicional></app-contribuicao-adicional>
+  <app-resgate></app-resgate>
+</div>

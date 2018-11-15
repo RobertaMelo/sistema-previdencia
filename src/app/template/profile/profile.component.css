@@ -1,0 +1,66 @@
+.usuario {
+    text-align: center;
+    width: 50%;
+    height: 50%;
+    padding-top: 50px;
+}
+
+.usuario-name {
+    font-size: 25px;
+}
+
+.back-menu {
+    background-color: rgb(23, 55, 97);
+    color: white;
+    text-align: center;
+}
+
+.menu-area {
+    background-color: var(--bg-dark);
+    box-shadow: 
+        2px 0 10px 0 rgba(0, 0, 0, 0.12),
+        2px 0 15px 0 rgba(0, 0, 0, 0.09);
+}
+
+.menu a {
+    color: #FFF;
+    font-weight: 300;
+}
+
+@media(max-width: 768px) {
+    .menu {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .menu li {
+        display: inline;
+        padding: 10px;
+        margin: 0px;
+    }
+
+    .menu {
+        height: 100%;
+        justify-content: space-around;
+    }
+}
+
+ul {
+    list-style-type: none;
+}
+
+.btn {
+    padding-bottom: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.status {
+    color: green;
+}
+
+.menu-style {
+    height: 100%;
+    width: 100%;
+}

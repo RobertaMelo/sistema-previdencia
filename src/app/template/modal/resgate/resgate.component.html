@@ -1,0 +1,26 @@
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="modalResgate" id="modalResgate" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-text">
+      <div class="modal-header">
+        <h5 class="modal-title"> Resgate</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="empresa">Tipo de Resgare</label>
+        <select class="custom-select" id="empresa" formControlName="empresa">
+            <option selected>Selecione o tipo de resgate...</option>
+            <option>Resgate Parcial</option>
+            <option>Resgate total</option>
+        </select> 
+        <p class="alerts" *ngIf="isFieldInvalid('empresa')">Informe a empresa vinculada.</p> 
+      </div>
+      <p>
+        *O resgate está sujeito às regras contidas no artigo respeitando o prazo de carência de 36 meses.
+        *Em caso de resgate total o plano será cancelado automaticamente.
+      </p>
+      <hr>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+.navigation {
+    color: rgb(250, 245, 245);
+    height: 50px;
+}
+
+.navigation ul {
+    margin-top: 0;
+    list-style: none;
+    padding-left: 0;
+    text-align: right;
+    height: 50px;
+}
+.navigation li {
+    display: inline-block;
+    padding-left: 30px;
+    padding-right: 30px;
+    line-height: 50px;
+    font-size: 18px;
+    font-weight: 100;
+    color: white;
+}
+
+.navigation a {
+    color: white;
+}

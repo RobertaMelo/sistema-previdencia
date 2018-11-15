@@ -1,0 +1,29 @@
+<body>
+  <div class="hoverzoom">
+    <img src="../../assets/img/back.png">
+    <div class="intro">
+      <div class="text-intro">
+        <h1>Bem vindo!</h1>
+        <h4>Selecione os dados para a sua busca.</h4>
+        <br><br>
+      </div>
+      <div class="col-md-6 offset-md-3">
+          <label for="participante">Participante:</label>
+          <div class="input-group-append">
+            <input type="text" class="form-control" id="participante" placeholder="Digite ou selecione um nome e pressione enter para buscar...">
+            <button class="fa fa-search submit-lente" data-toggle="modal" data-target="#modalBusca"></button>
+          </div>
+      </div>
+      <br><br>
+      <div>
+        <label for="participante">Para realizar um novo cadastro acesse:</label>
+        <div>
+         <a href="/participante" class="btn">Cadastro de participante</a>
+        </div>
+      </div>
+      <br>
+    </div>
+  </div>
+
+  <app-pesquisa-participante></app-pesquisa-participante>
+</body>
