@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +15,8 @@ import { ProfileComponent } from './template/profile/profile.component';
 import { PesquisaParticipanteComponent } from './template/modal/pesquisa-participante/pesquisa-participante.component';
 import { ContribuicaoAdicionalComponent } from './template/modal/contribuicao-adicional/contribuicao-adicional.component';
 import { ResgateComponent } from './template/modal/resgate/resgate.component';
+import { EmpresaService } from './services/empresa.service';
+import { AuthInterceptorProvider } from './interceptors/auth-interceptor';
 
 
 @NgModule({
@@ -35,9 +38,13 @@ import { ResgateComponent } from './template/modal/resgate/resgate.component';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     NgxMaskModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    EmpresaService,
+    AuthInterceptorProvider
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

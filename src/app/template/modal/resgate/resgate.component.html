@@ -14,18 +14,36 @@
           <option value="0">Resgate Parcial</option>
           <option value="1">Resgate total</option>
         </select> 
+        <label for="tipoResgate">Selecione o Tipo de saldo a ser resgatado </label>
         <p class="alerts" *ngIf="isFieldInvalid('empresa')">Informe a empresa vinculada.</p> 
-      </div>
-      <form>
-        <div class="form-group" *ngIf="tipoResgate.values == 0">
-          <label for="enviarFormulario">Enviar formulário para resgate parcial</label>
-          <input type="file" class="form-control-file" id="enviarFormulario">
+        <select class="custom-select" id="tipoSaldoResgate" formControlName="empresa">
+          <option selected>Selecione o tipo de saldo para o resgate...</option>
+          <option value="0"> Resgate saldo portabilidade</option>
+          <option value="1">Resgate saldo contribuições normais</option>
+          <option value="1">Resgate saldo contribuições adicionais</option>
+        </select>
+        <br><br>
+        <div class="card">
+          <div class="card-body">
+            Valor disponível para retirada: <br><span class="total">15.000,00</span>
+          </div>
         </div>
-      </form>
-      <hr>
-      <p>
-        *Em caso de resgate total o plano será cancelado automaticamente.
-      </p>
+        <form>
+          <div class="form-group" *ngIf="tipoResgate.values == 0">
+            <label for="enviarFormulario">Enviar formulário para resgate parcial</label>
+            <input type="file" class="form-control-file" id="enviarFormulario">
+          </div>
+        </form>
+        <div class="btn">
+          <button type="button" class="btn btn-outline-primary">Solicitar Resgate</button>
+        </div>
+      </div>
+      <div>
+        <hr>
+        <p>
+          *Em caso de resgate total do saldo de contribuição normal o plano será cancelado automaticamente.
+        </p>
+      </div>
     </div>
   </div>
 </div>

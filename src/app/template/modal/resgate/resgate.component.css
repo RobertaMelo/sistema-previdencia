@@ -7,3 +7,11 @@ p {
     text-align: end;
     padding-right: 5px;
 }
+
+.total {
+    color: green;
+}
+
+.btn {
+    text-align: center;
+}

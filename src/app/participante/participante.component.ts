@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EmpresaService } from '../services/empresa.service';
 
 @Component({
   selector: 'app-participante',
@@ -17,24 +18,34 @@ export class ParticipanteComponent implements OnInit {
   private formSubmitAttempt: boolean;
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public empresaService: EmpresaService
   ) { }
 
   ngOnInit() {
     this.formSubmitAttempt = false;
+    this.iniciaForm();
+    this.carregaEmpresas();
   }
 
   
   iniciaForm() {
     this.form = this.fb.group({
-      fullName: ['', Validators.required],
-      birthDate: ['', Validators.required],
-      number:  ['', Validators.required],
-      complement: [''],
-      neighbourhood:  ['', Validators.required],
-      country: ['', Validators.required],
-      state:  ['', Validators.required],
-      city: ['', Validators.required]
+      nome: ['', Validators.required],
+      sobrenome: ['', Validators.required],
+      endereco:  ['', Validators.required],
+      dataNascimento: [''],
+      cpf: ['', Validators.required],
+      cidade: ['', Validators.required],
+      cep: [''],
+      estado: [''],
+      pais: [''],
+      empresa: ['', Validators.required],
+      dataAposentadoria: ['', Validators.required],
+      valorPortabilidade: [''],
+      planoPortabilidade: [''],
+      situacaoParticipante: ['', Validators.required],
+      valorParcelaContribuicao:  ['', Validators.required]
     })
   }
 
@@ -61,6 +72,15 @@ export class ParticipanteComponent implements OnInit {
       (!this.form.get(field).valid && this.form.get(field).touched) ||
       (this.form.get(field).untouched && this.formSubmitAttempt)
     );
+  }
+
+  carregaEmpresas() {
+    this.empresaService.buscaEmpresas()
+    .subscribe((response) => {
+    console.log(response);
+    }, error => {
+      console.log(error);
+    });
   }
 
 
