@@ -2,7 +2,7 @@
 <div class="col-12 menu-style">
     <br>
     <div class="card card-align">
-        <form [formGroup]="form" (ngSubmit)="save()">
+        <form [formGroup]="form" (ngSubmit)="salvaParticipante()">
             <div class="card-header">
                 <h3 class="text-center">Informações Cadastrais</h3>
             </div>
@@ -11,7 +11,7 @@
                     {{message}}
                 </div>
                 <div class="form-group row">
-                    <div class="col-3">
+                    <div class="col-4">
                         <label for="nome">Nome</label>
                         <input type="text" class="form-control" id="nome" formControlName="nome" required>
                         <p class="alerts" *ngIf="isFieldInvalid('nome')">Informe seu nome completo.</p>
@@ -20,8 +20,8 @@
                         <label for="sobrenome">Sobrenome</label>
                         <input type="text" class="form-control" id="sobrenome" formControlName="sobrenome" required>
                         <p class="alerts" *ngIf="isFieldInvalid('sobrenome')">Informe seu sobrenome.</p>
-                        </div>
-                    <div class="col-3">
+                    </div>
+                    <div class="col-2">
                         <label for="dataNascimento">Data de Nascimento</label>
                         <input type="date" class="form-control" id="dataNascimento" formControlName="dataNascimento" required>
                         <p class="alerts" *ngIf="isFieldInvalid('dataNascimento')">Informe sua data de nascimento.</p>
@@ -33,25 +33,41 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <div class="col-7">
-                        <label for="endereco">Endereço</label>
-                        <input type="text" class="form-control" id="endereco" formControlName="endereco" required>
+                    <div class="col-3">
+                        <label for="sexo">Sexo</label>
+                        <select class="custom-select" id="sexo" formControlName="sexo">
+                            <option selected>Selecione...</option>
+                            <option value="0">Feminino</option>
+                            <option value="1">Masculino</option>
+                        </select> 
                     </div>
-                    <div class="col-5">
-                        <label for="cidade">Cidade</label>
-                        <input type="text" class="form-control" id="cidade" formControlName="cidade" required>
+                    <div class="col-3">
+                        <label for="estadoCivil">Estado civil</label>
+                        <select class="custom-select" id="estadoCivil" formControlName="estadoCivil">
+                            <option selected>Selecione...</option>
+                            <option value="0">Casado(a)</option>
+                            <option value="1">Solteiro(a)</option>
+                            <option value="2">Separado(a)</option>
+                            <option value="3">Divorciado(a)</option>
+                            <option value="4">Viúvo(a)</option>
+                        </select> 
                     </div>
+                    <div class="col-3">
+                        <label for="telefone">Telefone</label>
+                        <input type="text" class="form-control" id="telefone" formControlName="telefone"mask="(00)-00000-0000"  required>
+                        <p class="alerts" *ngIf="isFieldInvalid('telefone')">Informe um telefone para contato.</p>
+                    </div> 
+                    <div class="col-3">
+                        <label for="renda">Renda Mensal</label>
+                        <input type="number" class="form-control" id="renda" formControlName="renda" required>
+                    </div> 
                 </div>
                 <div class="form-group row">
-                    <div class="col-2">
-                        <label for="cep">CEP</label>
-                        <input type="text" class="form-control" id="cep" mask="00000-000" formControlName="cep" required>
-                    </div>
-                    <div class="col-2">
+                    <div class="col-3">
                         <label for="estado">Estado</label>
                         <input type="text" class="form-control" id="estado" formControlName="estado" required>
                     </div>
-                    <div class="col-2">
+                    <div class="col-3">
                         <label for="pais">País</label>
                         <input type="text" class="form-control" id="pais" formControlName="pais" required>
                     </div>
@@ -77,12 +93,11 @@
                     <div class="card-body">
                         <div class="row form-group">
                             <div class="col-3">
-                                <label for="empresa">Empresa</label>
-                                <select class="custom-select" id="empresa" formControlName="empresa">
+                                <label for="selectEmpresa">Empresa</label>
+                                <select class="custom-select" id="selectEmpresa" formControlName="empresa">
                                     <option selected>Selecione a empresa...</option>
-                                    <option>Empresa 1</option>
-                                    <option>Empresa 2</option>
-                                </select> 
+                                    <option *ngFor="let empresa of empresas" [value]="empresa">{{empresa.razaoSocial}}</option>
+                                </select>
                                 <p class="alerts" *ngIf="isFieldInvalid('empresa')">Informe a empresa vinculada.</p> 
                             </div>
                             <div class="col-3">
@@ -94,8 +109,9 @@
                                 <label for="planoPortabilidade">Plano Portabilidade</label>
                                 <select class="custom-select" id="empresa" formControlName="empresa">
                                     <option selected>Selecione o plano da portabilidade...</option>
-                                    <option>Previdência Complementar</option>
-                                    <option>Sociedade Seguradora</option>
+                                    <option value="0">Previdência Complementar</option>
+                                    <option value="1">Sociedade Seguradora</option>
+                                    <option value="2">Outros</option>
                                 </select> 
                             </div>
                             <div class="col-3">

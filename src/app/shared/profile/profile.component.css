@@ -57,7 +57,8 @@ ul {
 }
 
 .status {
-    color: green;
+    color: rgb(115, 178, 207);
+    font-size: 18px;
 }
 
 .menu-style {

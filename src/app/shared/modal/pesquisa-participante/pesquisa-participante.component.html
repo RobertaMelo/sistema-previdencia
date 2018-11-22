@@ -2,35 +2,31 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Participantes:</h5>
+          <h5 class="modal-title" id="labelModal">Participantes:</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped table-hover" id="selecao"> 
                 <thead>
                   <tr>
                     <th scope="col">Nome</th>
                     <th scope="col">Empresa</th>
+                    <th scope="col">Data Nascimento</th>
+                    <th scope="col">Situação</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Roberta Melo</td>
-                    <td>Empresa 1</td>
-                  </tr>
-                  <tr>
-                    <td>Jhonatan Souza de Carvalho</td>
-                    <td>Empresa 2</td>
-                  </tr>
-                  <tr>
-                    <td>Jacob</td>
-                    <td>Empresa 3</td>
+                  <tr *ngFor="let participante of participantes" (click)="selecionaParticipanteTabela(participante);" data-dismiss="modal">
+                    <td>{{participante.nome}}</td>
+                    <td>{{participante.empresa}}</td>
+                    <td>{{participante.dataNascimento}}</td>
+                    <td>{{participante.situacaoParticipante}}</td>
                   </tr>
                 </tbody>
               </table>
         </div>
       </div>
-    </div>
+    </div>  
   </div>

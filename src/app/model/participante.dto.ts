@@ -15,7 +15,13 @@ export interface ParticipanteDTO {
     situacaoParticipante: string;
     valorParcelaContribuicao: number;
     dataCadastro: Date;
-    carencia: number;
+    carencia: Date;
+    idEmpresaFK: number;
+    idSaldoFK: number;
+    sexo: string;
+    estadoCivil: string,
+    telefone: number,
+    renda: number;
 }
 
 export interface EmpresaDTO {

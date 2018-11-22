@@ -9,17 +9,15 @@
           <br>
           <ul class="list-unstyled components menu-area">
           <br>
-              <p class="usuario-name">Roberta Melo</p>
-              <p class="status">Situação: Ativo</p>
+              <p class="usuario-name">{{participante?.nome}} {{participante?.sobrenome}}</p>
+              <span>Situação: <p class="status">{{participante?.situacaoParticipante}}</p></span>
               <hr>
               <li class="active menu">
-                  <p>Plano: Tipo 1</p>
+                  <span>Empresa: <br> <p class="status">{{empresa?.razaoSocial}}</p></span>
                   <hr>
-                  <p>Empresa: Teste</p>
+                  <span>Carência:<br> <p class="status">{{participante?.carencia}}</p></span>
                   <hr>
-                  <p>Saldo total: 15.000,00</p>
-                  <hr>
-                  <p>Data aposentadoria: 12/12/2050</p>
+                  <span>Data aposentadoria: <br> <p class="status">{{participante?.dataAposentadoria}}</p></span>
                   <hr>
                   <div class="row btn">
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalContribuicaoAdicional">Contribuição Adicional</button>
@@ -31,6 +29,6 @@
           </ul>
       </nav>
   </div>
-  <app-contribuicao-adicional></app-contribuicao-adicional>
-  <app-resgate></app-resgate>
+  <app-contribuicao-adicional [participante]="participante" [saldo]="saldo"></app-contribuicao-adicional>
+  <app-resgate [participante]="participante" [saldo]="saldo"></app-resgate>
 </div>

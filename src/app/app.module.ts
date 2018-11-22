@@ -9,14 +9,7 @@ import { HomeComponent } from './home/home.component';
 import { ParticipanteComponent } from './participante/participante.component';
 import { SaldosComponent } from './saldos/saldos.component';
 import { NgxMaskModule } from 'ngx-mask';
-import { NavbarComponent } from './template/navbar/navbar.component';
-import { HeadListComponent } from './template/head-list/head-list.component';
-import { ProfileComponent } from './template/profile/profile.component';
-import { PesquisaParticipanteComponent } from './template/modal/pesquisa-participante/pesquisa-participante.component';
-import { ContribuicaoAdicionalComponent } from './template/modal/contribuicao-adicional/contribuicao-adicional.component';
-import { ResgateComponent } from './template/modal/resgate/resgate.component';
-import { EmpresaService } from './services/empresa.service';
-import { AuthInterceptorProvider } from './interceptors/auth-interceptor';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -25,13 +18,6 @@ import { AuthInterceptorProvider } from './interceptors/auth-interceptor';
     HomeComponent,
     ParticipanteComponent,
     SaldosComponent,
-    NavbarComponent,
-    HeadListComponent,
-    ProfileComponent,
-    PesquisaParticipanteComponent,
-    ContribuicaoAdicionalComponent,
-    ResgateComponent
-    
   ],
   imports: [
     BrowserModule,
@@ -39,12 +25,10 @@ import { AuthInterceptorProvider } from './interceptors/auth-interceptor';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    SharedModule.forRoot(),
     NgxMaskModule.forRoot()
   ],
-  providers: [
-    EmpresaService,
-    AuthInterceptorProvider
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
