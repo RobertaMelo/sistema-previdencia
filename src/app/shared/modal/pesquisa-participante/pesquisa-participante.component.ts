@@ -13,14 +13,13 @@ export class PesquisaParticipanteComponent implements OnInit {
   @Output() respostaSelecao = new EventEmitter();
 
   constructor(
-    public participanteService:  ParticipanteService
+    public participanteService: ParticipanteService
   ) { }
 
   ngOnInit() {
     this.carregaParticipantes();
   }
 
-  
   carregaParticipantes() {
     this.participanteService.buscaTodos()
     .subscribe(response => {

@@ -9,10 +9,11 @@ export interface SaldoDTO {
 
 export interface ContribuicoesDTO {
     id: number;
-    data: Date;
+    data: string;
     tipo: string;
     valor: number;
     idParticipanteFk: number;
+    idSaldoFK: number;
 }
 
 export interface ResgateDTO {

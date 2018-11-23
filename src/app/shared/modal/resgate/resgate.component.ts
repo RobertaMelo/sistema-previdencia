@@ -2,11 +2,15 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ParticipanteDTO } from '../../../model/participante.dto';
 import { ResgateDTO, SaldoDTO } from '../../../model/saldo.dto';
 import { ResgateService } from '../../../services/resgate.service';
+import { ToastrService } from 'ngx-toastr';  
+import { DateService } from '../../../services/date.service';
+import { SaldoService } from '../../../services/saldo.service';
+import { ParticipanteService } from '../../../services/participante.service';
 
 @Component({
   selector: 'app-resgate',
   templateUrl: './resgate.component.html',
-  styleUrls: ['./resgate.component.css']
+  styleUrls: ['./resgate.component.css'],
 })
 export class ResgateComponent implements OnInit {
 
@@ -21,7 +25,7 @@ export class ResgateComponent implements OnInit {
     valorParcelaResgate: null,
     idParticipanteFk: 0,
     opcaoPagamentoParcelado: "",
-    quantidadeParcelaResgate: null,
+    quantidadeParcelaResgate: 1,
     dataLiberacaoResgate: null,
     formulario: null,
     valorResgateParcial: null
@@ -29,7 +33,13 @@ export class ResgateComponent implements OnInit {
 
   formularioUpload: File = null;
   
-  constructor(private resgateService: ResgateService) { }
+  constructor(
+    private resgateService: ResgateService,
+    private saldoService: SaldoService,
+    private participanteService: ParticipanteService,
+    private toastr: ToastrService,
+    private dateService: DateService
+    ) { }
 
   ngOnInit() {
     this.limpaFormulario();
@@ -39,141 +49,259 @@ export class ResgateComponent implements OnInit {
     if (this.resgate.quantidadeParcelaResgate > 0) {
       this.resgate.valorParcelaResgate = Math.round(saldo / this.resgate.quantidadeParcelaResgate)
     } 
-    console.log("Você deve escolher uma quantidade de parcelas para continuar.")
+    this.toastr.warning("Escolha a quantidade de parcelas para continuar.");
     return;
   }
 
-  calculaData(dias) {
-    var data = new Date();
-    data.setDate(data.getDate() + dias);  
-  }
-
   uploadFormulario(arquivos: FileList) {
-    if (this.resgate.formulario == null) {
-      console.log("Para realizar o resgate com pagamento parcelado é necessário encaminhar o formulário preenchido");
-      return;
-    }
     this.formularioUpload = arquivos.item(0);
     this.resgate.formulario = new Blob([this.formularioUpload],{type: 'application/pdf'});
   }
 
-  resgatePortabilidade() {
-    this.saldo.saldoDisponivelRetirada = this.participante.saldoPortabilidade;
-    if (this.participante.planoPortabilidade == "0" || "1") {
-      if (this.resgate.tipoResgate == "0") {
-        this.saldo.saldoDisponivelRetirada = this.resgate.valorResgateParcial;
-      }
-      if(this.resgate.opcaoPagamentoParcelado == "0") {
-        this.calculaValorParcela(this.saldo.saldoDisponivelRetirada);
-      }
-      this.resgate.dataUltimoResgate = new Date();
-      this.participante.saldoPortabilidade = 0;
-      this.saldo.saldoTotal = this.saldo.saldoTotal - this.participante.saldoPortabilidade;
+  atualizaSaldoDisponivelRetirada() {
+    switch (this.resgate.tipoSaldoResgate) {
+      case "0": // resgatePortabilidade
+        this.saldo.saldoDisponivelRetirada = this.participante.saldoPortabilidade;
+        break;
+      case "1": // resgateContribuicaoNormal
+        this.saldo.saldoDisponivelRetirada = Math.round(this.saldo.saldoContribuicoesNormais * (20/100)); // 20% ao ano
+        break;
+      case "2": // resgateContribuicaoAdicional
+        this.saldo.saldoDisponivelRetirada = this.saldo.saldoContribuicoesAdicionais;
+        break;
+      case "3": // resgateTotal
+        this.saldo.saldoDisponivelRetirada = this.saldo.saldoTotal;
+        break;
     }
-    console.log("O resgate não se enquadra nesse tipo de plano oriundo de portabilidade");
-    return;
+  }
+
+  resgatePortabilidade() {
+    if (this.participante.planoPortabilidade == "2") {
+      this.toastr.error("O resgate não se enquadra nesse tipo de plano de portabilidade.");
+      return;
+    }
+
+    if (this.resgate.tipoResgate == "0") { // resgate parcial portabilidade 
+      
+      if(this.resgate.opcaoPagamentoParcelado == "0") { // resgate parcelado parcial portabilidade
+        if (this.resgate.valorResgateParcial <= this.saldo.saldoDisponivelRetirada) {
+          this.resgate.valorParcelaResgate = Math.round(this.resgate.valorResgateParcial / this.resgate.quantidadeParcelaResgate);
+        } else {
+          this.toastr.error("O saldo do resgate parcial não pode ser igual ao valor total disponível.");
+          return;
+        }
+      } else { // resgate não parcelado parcial portabilidade
+        this.resgate.valorParcelaResgate = this.resgate.valorResgateParcial;
+      }
+
+      this.participante.saldoPortabilidade -= this.resgate.valorResgateParcial;
+      this.saldo.saldoTotal -= this.resgate.valorResgateParcial;
+      this.saldo.saldoDisponivelRetirada -= this.resgate.valorResgateParcial;
+      
+      return;
+    }
+
+    // resgate total portabilidade
+    if(this.resgate.opcaoPagamentoParcelado == "0") { // resgate parcelado total portabilidade
+      this.resgate.valorParcelaResgate = Math.round(this.saldo.saldoDisponivelRetirada / this.resgate.quantidadeParcelaResgate);
+    } else { // resgate não parcelado total portabilidade
+      this.resgate.valorParcelaResgate = this.saldo.saldoDisponivelRetirada;
+    }
+
+    this.participante.saldoPortabilidade -= this.saldo.saldoDisponivelRetirada;
+    this.saldo.saldoTotal -= this.saldo.saldoDisponivelRetirada;
+    this.saldo.saldoDisponivelRetirada = 0;
   }
 
   resgateContribuicaoNormal() {
-    if (this.resgate.tipoResgate == "1") {
-      //mensagem confirmação
-      this.resgateTotal(); 
-      return;  
-    } 
-    if (this.resgate.tipoResgate == "0") {
-      this.saldo.saldoDisponivelRetirada = this.resgate.valorResgateParcial;
+    this.saldo.saldoDisponivelRetirada = Math.round(this.saldo.saldoContribuicoesNormais * (20/100));
+    if (this.resgate.dataUltimoResgate < this.dateService.adicionaAnos(this.resgate.dataUltimoResgate, 2)){
+      this.toastr.error("O resgate não pode ser realizado dentro do período de 2 anos, após o ultimo resgate.");
     }
-    //calcular ultima data que houve resgate para continuar, tem que ser no periodo de 2 anos.
-    this.saldo.saldoDisponivelRetirada = Math.round(this.saldo.saldoContribuicoesNormais * (20/100))
-    if(this.resgate.opcaoPagamentoParcelado == "0") {
-      this.calculaValorParcela(this.saldo.saldoDisponivelRetirada);
+
+    if (this.resgate.tipoResgate == "0") { // resgate parcial contribuicao normal 
+      
+      if(this.resgate.opcaoPagamentoParcelado == "0") { // resgate parcelado parcial contribuicao normal 
+        if (this.resgate.valorResgateParcial <= this.saldo.saldoDisponivelRetirada) {
+        this.resgate.valorParcelaResgate = Math.round(this.resgate.valorResgateParcial / this.resgate.quantidadeParcelaResgate);
+        } else {
+          this.toastr.error("O saldo do resgate parcial não pode ser igual ao valor total disponível.");
+          return;
+        }
+      } else { // resgate não parcelado parcial contribuicao normal 
+        this.resgate.valorParcelaResgate = this.resgate.valorResgateParcial;
+      }
+
+      this.saldo.saldoContribuicoesNormais -= this.resgate.valorResgateParcial;
+      this.saldo.saldoTotal -= this.resgate.valorResgateParcial;
+      this.saldo.saldoDisponivelRetirada -= this.resgate.valorResgateParcial;
+      
+      return;
     }
-    this.resgate.dataUltimoResgate = new Date();
-    this.saldo.saldoContribuicoesNormais = 0;
-    this.saldo.saldoTotal = this.saldo.saldoTotal - this.saldo.saldoContribuicoesNormais;
+
+    // resgate total contribuicao normal 
+    if(this.resgate.opcaoPagamentoParcelado == "0") { // resgate parcelado total contribuicao normal 
+      this.resgate.valorParcelaResgate = Math.round(this.saldo.saldoDisponivelRetirada / this.resgate.quantidadeParcelaResgate);
+    } else { // resgate não parcelado total portabilidade
+      this.resgate.valorParcelaResgate = this.saldo.saldoDisponivelRetirada;
+    }
+
+    this.saldo.saldoContribuicoesNormais -= this.saldo.saldoDisponivelRetirada;
+    this.saldo.saldoTotal -= this.saldo.saldoDisponivelRetirada;
+    this.saldo.saldoDisponivelRetirada = 0;
   }
 
   resgateContribuicaoAdicional() {
-    this.saldo.saldoDisponivelRetirada = this.saldo.saldoContribuicoesAdicionais;
-    if (this.resgate.tipoResgate == "0") {
-      this.saldo.saldoDisponivelRetirada = this.resgate.valorResgateParcial;
-      this.saldo.saldoTotal = (this.saldo.saldoTotal - this.saldo.saldoDisponivelRetirada);
-      this.saldo.saldoContribuicoesAdicionais = (this.saldo.saldoContribuicoesAdicionais - this.saldo.saldoDisponivelRetirada);
-      this.resgate.dataUltimoResgate = new Date();
+
+    if (this.resgate.tipoResgate == "0") { // resgate parcial contribuição adicional
+       
+      if(this.resgate.opcaoPagamentoParcelado == "0") { // resgate parcelado parcial contribuição adicional
+        if (this.resgate.valorResgateParcial <= this.saldo.saldoDisponivelRetirada) {
+          this.resgate.valorParcelaResgate = Math.round(this.resgate.valorResgateParcial / this.resgate.quantidadeParcelaResgate);
+        } else {
+          this.toastr.error("O saldo do resgate parcial não pode ser igual ao valor total disponível.");
+          return;
+        }
+      } else { // resgate não parcelado parcial contribuição adicional
+        this.resgate.valorParcelaResgate = this.resgate.valorResgateParcial;
+      }
+
+      this.saldo.saldoContribuicoesAdicionais -= this.resgate.valorResgateParcial;
+      this.saldo.saldoTotal -= this.resgate.valorResgateParcial;
+      this.saldo.saldoDisponivelRetirada -= this.resgate.valorResgateParcial;
+      
+      return;
     }
-    if(this.resgate.opcaoPagamentoParcelado == "0") {
-      this.calculaValorParcela(this.saldo.saldoDisponivelRetirada);
+
+    // resgate total contribuição adicional
+    if(this.resgate.opcaoPagamentoParcelado == "0") { // resgate parcelado total contribuição adicional
+      this.resgate.valorParcelaResgate = Math.round(this.saldo.saldoDisponivelRetirada / this.resgate.quantidadeParcelaResgate);
+    } else { // resgate não parcelado total contribuição adicional
+      this.resgate.valorParcelaResgate = this.saldo.saldoDisponivelRetirada;
     }
-    if (this.resgate.tipoResgate == "1") {
-      this.saldo.saldoTotal = this.saldo.saldoTotal - this.saldo.saldoContribuicoesAdicionais;
-      this.saldo.saldoContribuicoesAdicionais = 0;
-      this.resgate.dataUltimoResgate = new Date();
-      console.log("O valor foi resgatado com sucesso.")
-      } else {
-        console.log("O resgate não se enquadra nesse tipo de plano oriundo de portabilidade");
-    }
+
+    this.saldo.saldoContribuicoesAdicionais -= this.saldo.saldoDisponivelRetirada;
+    this.saldo.saldoTotal -= this.saldo.saldoDisponivelRetirada;
+    this.saldo.saldoDisponivelRetirada = 0;
 
   }
   
   resgateTotal() {
-    this.saldo.saldoDisponivelRetirada = this.saldo.saldoTotal;
-    this.saldo.saldoTotal = 0;
+
+    // resgate total todos os saldos
+    if(this.resgate.opcaoPagamentoParcelado == "0") { // resgate parcelado total todos os saldos
+      if (this.resgate.valorResgateParcial == this.saldo.saldoDisponivelRetirada) {
+        this.resgate.valorParcelaResgate = Math.round(this.saldo.saldoDisponivelRetirada / this.resgate.quantidadeParcelaResgate);
+      } else {
+        this.toastr.error("O saldo do resgate parcial não pode ser igual ao valor total disponível.");
+        return;
+      }
+    } else { // resgate não parcelado total todos os saldos
+      this.resgate.valorParcelaResgate = this.saldo.saldoDisponivelRetirada;
+    }
+
     this.saldo.saldoContribuicoesAdicionais = 0;
     this.saldo.saldoContribuicoesNormais = 0;
     this.participante.saldoPortabilidade = 0;
+    this.saldo.saldoTotal -= this.saldo.saldoDisponivelRetirada;
+    this.saldo.saldoDisponivelRetirada = 0;
     this.participante.situacaoParticipante == "1";
-    this.resgate.dataUltimoResgate = new Date();
-    console.log("O valor foi resgatado com sucesso. Seu plano foi cancelado.")
+
+    this.toastr.success("O valor foi resgatado com sucesso e seu plano foi cancelado.");
   }
 
+  validaResgate() {
+    if (this.resgate.tipoResgate == "" || this.resgate.tipoSaldoResgate == "") {
+      this.toastr.warning("Você deve selecionar o tipo de resgate e o tipo de saldo de resgate.");
+      //this.alerts.setMessage('Os valores do tipo de resgate e tipo de saldo do resgate estão vazios','error');
+      return false; 
+    }
+   
+    if (this.participante.situacaoParticipante == "1" || this.participante.situacaoParticipante == "2") {
+      this.toastr.error("O resgate não pode ser realizado por um participante com situação atual de Cancelado ou Benefício.");
+      return false; 
+    }
+    
+    if (this.participante.carencia < new Date()) {
+      this.toastr.info("O prazo de carência ainda não foi cumprido. O resgate poderá ser solicitado a partir de " + this.participante.carencia);
+      return false; 
+    }
+
+    if (this.saldo.saldoDisponivelRetirada <= 0) {
+      this.toastr.info("Você não possui saldo disponível para resgate.");
+      return false;
+    }
+
+    if (this.resgate.tipoResgate == "0") {
+      if (this.resgate.formulario == null) {
+        this.toastr.error("Para realizar o resgate com pagamento parcelado é necessário encaminhar o formulário preenchido");
+        return false;
+      }
+
+      if (this.resgate.valorResgateParcial > this.saldo.saldoDisponivelRetirada)  {
+        this.toastr.warning("Valor parcial maior que valor disponivel para retirada.");
+        return false;
+      }
+    }
+
+    if(this.resgate.opcaoPagamentoParcelado == "0" && this.resgate.quantidadeParcelaResgate <= 0) {
+      this.toastr.error("Quantidade de parcelas inválida para resgate.");
+      return false;
+    }
+
+    return true;
+  }
 
   realizarResgate() {
-    if (this.resgate.tipoResgate == "" || this.resgate.tipoSaldoResgate == "") {
-      console.log("Os valores estão vazios");
-      return; 
+    if (!this.validaResgate()) {
+      return;
     }
-    if (this.participante.situacaoParticipante == "1" || "2") {
-      console.log("O resgate não pode ser realizado por um participante com situação atual de Cancelado ou Benefício");
-      return; 
-    }
-    if (this.participante.carencia < new Date()) {
-      console.log("O prazo de carência ainda não foi cumprido. O resgate poderá ser solicitado a partir de " + this.participante.carencia);
-      return; 
-    }
-    switch (this.resgate.tipoResgate == "0" || this.resgate.tipoResgate == "1") {
-      case this.resgate.tipoSaldoResgate == "0":
-        this.resgatePortabilidade()
+
+    switch (this.resgate.tipoSaldoResgate) {
+      case "0":
+        this.resgatePortabilidade();
         break;
-      case this.resgate.tipoSaldoResgate == "1":
+      case "1":
         this.resgateContribuicaoNormal();
         break;
-      case this.resgate.tipoSaldoResgate == "2":
+      case "2":
         this.resgateContribuicaoAdicional();
         break;
-      case this.resgate.tipoSaldoResgate == "2":
+      case "3":
         this.resgateTotal();
         break;
     }
+
     this.resgate.idParticipanteFk = this.participante.id;
+    this.resgate.dataUltimoResgate = new Date();
+
     this.resgateService.salva(this.resgate)
     .subscribe(() => {
-      console.log('Salvo com sucesso!');
-      console.log('Os valores pertinentes ao resgate serão liberados a partir de:' + this.calculaData(30));
-      this.resgate.dataUltimoResgate = new Date();
+      this.participanteService.altera(this.participante)
+      .subscribe(response => {
+        console.log('Alterado com sucesso! ' + response);
+      }, error => {
+        console.log(error);
+      });
+      this.saldoService.altera(this.saldo)
+      .subscribe(response => {
+        console.log('Alterado com sucesso! ' + response);
+      }, error => {
+        console.log(error);
+      });
+      this.toastr.info("Os valores pertinentes ao resgate serão liberados a partir de:" + this.dateService.adicionaDias(new Date(), 30));
       this.limpaFormulario();
     }, error => {
       console.log(error);
     });
   }
 
-
   limpaFormulario() {
-    this.resgate.tipoResgate = "2";
-    this.resgate.tipoSaldoResgate = "4";
+    this.resgate.tipoResgate = "";
+    this.resgate.tipoSaldoResgate = "";
     this.resgate.opcaoPagamentoParcelado = "2";
     this.resgate.valorParcelaResgate = 0;
-    this.saldo.saldoDisponivelRetirada = this.saldo.saldoContribuicoesNormais;
-    this.saldo.saldoTotal = this.saldo.saldoContribuicoesAdicionais + this.saldo.saldoContribuicoesNormais + this.participante.saldoPortabilidade;
+    this.resgate.quantidadeParcelaResgate = 1;
   }
 
 }

@@ -13,6 +13,7 @@ import { EmpresaService } from "../services/empresa.service";
 import { ParticipanteService } from "../services/participante.service";
 import { ResgateService } from "../services/resgate.service";
 import { SaldoService } from "../services/saldo.service";
+import { DateService } from "../services/date.service";
 
 @NgModule ({
     declarations: [
@@ -41,7 +42,7 @@ export class SharedModule {
     static forRoot(): ModuleWithProviders {
         return {
             ngModule: SharedModule,
-            providers: [ContribuicoesService, EmpresaService, ParticipanteService, ResgateService, SaldoService]
+            providers: [ContribuicoesService, EmpresaService, ParticipanteService, ResgateService, SaldoService, DateService]
         }
     } 
 }

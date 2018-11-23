@@ -20,7 +20,7 @@
                 <tbody>
                   <tr *ngFor="let participante of participantes" (click)="selecionaParticipanteTabela(participante);" data-dismiss="modal">
                     <td>{{participante.nome}}</td>
-                    <td>{{participante.empresa}}</td>
+                    <td>{{participante.idEmpresaFK}}</td>
                     <td>{{participante.dataNascimento}}</td>
                     <td>{{participante.situacaoParticipante}}</td>
                   </tr>

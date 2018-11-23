@@ -22,11 +22,18 @@ export class ParticipanteService {
   salva(participante: ParticipanteDTO) {
     return this.http.post(
         `${API_CONFIG.baseUrl}participante`, 
-        participante,
-        { 
+        participante
+    ); 
+  }
+
+  altera(participante: ParticipanteDTO) {
+    return this.http.put(
+      `${API_CONFIG.baseUrl}participante`, 
+      participante,
+      { 
           observe: 'response', 
           responseType: 'text'
-        }
+      }
     ); 
   }
 }

@@ -5,6 +5,8 @@ import { EmpresaDTO, ParticipanteDTO } from '../model/participante.dto';
 import { API_CONFIG } from '../config/api.config';
 import { HttpClient } from '@angular/common/http';
 import { ParticipanteService } from '../services/participante.service';
+import { SaldoService } from '../services/saldo.service';
+import { SaldoDTO } from '../model/saldo.dto';
 
 @Component({
   selector: 'app-participante',
@@ -22,6 +24,15 @@ export class ParticipanteComponent implements OnInit {
   empresas: EmpresaDTO[];
   empresa: EmpresaDTO;
   
+  saldo: SaldoDTO = {
+    id: 0,
+    saldoContribuicoesNormais: 0,
+    saldoContribuicoesAdicionais: 0,
+    quantidadeParcelas: 0,
+    saldoTotal: 0,
+    saldoDisponivelRetirada: 0
+  };
+
   participante: ParticipanteDTO = {
     id: 0,
     name : "",
@@ -54,6 +65,7 @@ export class ParticipanteComponent implements OnInit {
     private fb: FormBuilder,
     public empresaService: EmpresaService,
     public http: HttpClient,
+    private saldoService: SaldoService,
     private participanteService: ParticipanteService
   ) { }
 
@@ -63,19 +75,18 @@ export class ParticipanteComponent implements OnInit {
     this.carregaEmpresas();
   }
 
-
   iniciaForm() {
     this.form = this.fb.group({
       nome: ['', Validators.required],
       sobrenome: ['', Validators.required],
-      endereco:  ['', Validators.required],
+      endereco:  [''], 
       dataNascimento: [''],
       cpf: ['', Validators.required],
-      cidade: ['', Validators.required],
+      cidade: [''], 
       cep: [''],
       estado: [''],
       pais: [''],
-      empresa: ['', Validators.required],
+      idEmpresaFK: ['', Validators.required],
       dataAposentadoria: ['', Validators.required],
       valorPortabilidade: [''],
       planoPortabilidade: [''],
@@ -84,7 +95,8 @@ export class ParticipanteComponent implements OnInit {
       sexo: ['', Validators.required],
       estadoCivil: [''],
       telefone: [''],
-      renda: ['']
+      renda: [''],
+      idSaldoFK: ['']
     })
   }
 
@@ -125,11 +137,20 @@ export class ParticipanteComponent implements OnInit {
   salvaParticipante() {
     this.formSubmitAttempt = true;
     if (!this.form.valid) {
-    return;
+      console.log("Formulário inválido");
+      return;
     }
-    this.participanteService.salva(this.participante)
-    .subscribe(() => {
-      console.log('Salvo com sucesso!');
+
+    this.saldoService.salva(this.saldo)
+    .subscribe(response => {
+      this.form.get('idSaldoFK').setValue(response['id']);
+      this.participanteService.salva(this.form.value)
+      .subscribe(response => {
+        console.log('Salvo com sucesso! ' + response);
+        this.reset()
+      }, error => {
+        console.log(error);
+      });
     }, error => {
       console.log(error);
     });

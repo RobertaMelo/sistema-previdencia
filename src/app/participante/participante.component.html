@@ -11,7 +11,7 @@
                     {{message}}
                 </div>
                 <div class="form-group row">
-                    <div class="col-4">
+                    <div class="col-3">
                         <label for="nome">Nome</label>
                         <input type="text" class="form-control" id="nome" formControlName="nome" required>
                         <p class="alerts" *ngIf="isFieldInvalid('nome')">Informe seu nome completo.</p>
@@ -26,22 +26,22 @@
                         <input type="date" class="form-control" id="dataNascimento" formControlName="dataNascimento" required>
                         <p class="alerts" *ngIf="isFieldInvalid('dataNascimento')">Informe sua data de nascimento.</p>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label for="cpf">CPF</label>
                         <input type="text" class="form-control" id="cpf" mask="000.000.000-00" formControlName="cpf">
                         <p class="alerts" *ngIf="isFieldInvalid('cpf')">Informe seu CPF.</p>
                     </div>
+                    <div class="col-2">
+                        <label for="sexo">Sexo</label>
+                            <select class="custom-select" id="sexo" formControlName="sexo">
+                                <option selected>Selecione...</option>
+                                <option value="0">Feminino</option>
+                                <option value="1">Masculino</option>
+                            </select> 
+                    </div>
                 </div>
                 <div class="form-group row">
-                    <div class="col-3">
-                        <label for="sexo">Sexo</label>
-                        <select class="custom-select" id="sexo" formControlName="sexo">
-                            <option selected>Selecione...</option>
-                            <option value="0">Feminino</option>
-                            <option value="1">Masculino</option>
-                        </select> 
-                    </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label for="estadoCivil">Estado civil</label>
                         <select class="custom-select" id="estadoCivil" formControlName="estadoCivil">
                             <option selected>Selecione...</option>
@@ -52,15 +52,24 @@
                             <option value="4">Viúvo(a)</option>
                         </select> 
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label for="telefone">Telefone</label>
                         <input type="text" class="form-control" id="telefone" formControlName="telefone"mask="(00)-00000-0000"  required>
                         <p class="alerts" *ngIf="isFieldInvalid('telefone')">Informe um telefone para contato.</p>
                     </div> 
-                    <div class="col-3">
+                    <div class="col-2">
                         <label for="renda">Renda Mensal</label>
                         <input type="number" class="form-control" id="renda" formControlName="renda" required>
+                        <p class="alerts" *ngIf="isFieldInvalid('renda')">Informe sua renda.</p>
                     </div> 
+                    <div class="col-3">
+                        <label for="endereco">Endereço</label>
+                            <input type="text" class="form-control" id="endereco"  formControlName="endereco">
+                    </div>
+                    <div class="col-3">
+                        <label for="cidade">Cidade</label>
+                        <input type="text" class="form-control" id="cidade"  formControlName="cidade">
+                    </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-3">
@@ -94,11 +103,11 @@
                         <div class="row form-group">
                             <div class="col-3">
                                 <label for="selectEmpresa">Empresa</label>
-                                <select class="custom-select" id="selectEmpresa" formControlName="empresa">
+                                <select class="custom-select" id="selectEmpresa" formControlName="idEmpresaFK">
                                     <option selected>Selecione a empresa...</option>
-                                    <option *ngFor="let empresa of empresas" [value]="empresa">{{empresa.razaoSocial}}</option>
+                                    <option *ngFor="let empresa of empresas">{{empresa.razaoSocial}}</option>
                                 </select>
-                                <p class="alerts" *ngIf="isFieldInvalid('empresa')">Informe a empresa vinculada.</p> 
+                                <p class="alerts" *ngIf="isFieldInvalid('idEmpresaFK')">Informe a empresa vinculada.</p> 
                             </div>
                             <div class="col-3">
                                 <label for="dataAposentadoria">Data da Aposentadoria</label>
@@ -107,8 +116,7 @@
                             </div>
                             <div class="col-3">
                                 <label for="planoPortabilidade">Plano Portabilidade</label>
-                                <select class="custom-select" id="empresa" formControlName="empresa">
-                                    <option selected>Selecione o plano da portabilidade...</option>
+                                <select class="custom-select" id="planoPortabilidade" formControlName="planoPortabilidade">
                                     <option value="0">Previdência Complementar</option>
                                     <option value="1">Sociedade Seguradora</option>
                                     <option value="2">Outros</option>

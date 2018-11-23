@@ -15,4 +15,21 @@ export class SaldoService {
     return this.http.get<SaldoDTO>(`${API_CONFIG.baseUrl}saldo/${id}`);
   }
 
+  salva(saldo: SaldoDTO) {
+    return this.http.post(
+        `${API_CONFIG.baseUrl}saldo`, 
+        saldo
+    ); 
+  }
+
+  altera(saldo: SaldoDTO) {
+    return this.http.put(
+      `${API_CONFIG.baseUrl}saldo`, 
+      saldo,
+      { 
+          observe: 'response', 
+          responseType: 'text'
+      }
+    ); 
+  }
 }

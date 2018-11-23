@@ -61,6 +61,7 @@ export class SaldosComponent implements OnInit {
     this.saldosService.buscaPorId(this.participante.idSaldoFK)
     .subscribe(response => {
       this.saldo = response;
+      this.saldo.saldoTotal = this.saldo.saldoContribuicoesAdicionais + this.saldo.saldoContribuicoesNormais + this.participante.saldoPortabilidade;
     }, error => {
       console.log(error);
     });
