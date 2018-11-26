@@ -28,12 +28,24 @@ export class ParticipanteService {
 
   altera(participante: ParticipanteDTO) {
     return this.http.put(
-      `${API_CONFIG.baseUrl}participante`, 
-      participante,
-      { 
-          observe: 'response', 
-          responseType: 'text'
-      }
+      `${API_CONFIG.baseUrl}participante/${participante.id}`, 
+      participante
     ); 
+  }
+
+  buscaDescricaoSituacao(participante: ParticipanteDTO) {
+    switch (participante.situacaoParticipante) {
+      case "0": 
+        return "Ativo";
+      case "1": 
+       return "Cancelado";
+      case "2": 
+       return "Benefício";
+      case "3": 
+       return "Vinculado";
+      case "4": 
+      return "Suspenso";
+    }
+    
   }
 }

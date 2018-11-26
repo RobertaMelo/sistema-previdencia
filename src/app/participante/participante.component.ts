@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmpresaService } from '../services/empresa.service';
 import { EmpresaDTO, ParticipanteDTO } from '../model/participante.dto';
-import { API_CONFIG } from '../config/api.config';
 import { HttpClient } from '@angular/common/http';
 import { ParticipanteService } from '../services/participante.service';
 import { SaldoService } from '../services/saldo.service';
 import { SaldoDTO } from '../model/saldo.dto';
+import { DateService } from '../services/date.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-participante',
@@ -21,8 +22,8 @@ export class ParticipanteComponent implements OnInit {
   message: string;
   messageType: string;
 
+  empresasId: number[];
   empresas: EmpresaDTO[];
-  empresa: EmpresaDTO;
   
   saldo: SaldoDTO = {
     id: 0,
@@ -30,18 +31,16 @@ export class ParticipanteComponent implements OnInit {
     saldoContribuicoesAdicionais: 0,
     quantidadeParcelas: 0,
     saldoTotal: 0,
-    saldoDisponivelRetirada: 0
   };
 
   participante: ParticipanteDTO = {
     id: 0,
-    name : "",
+    nome : "",
     sobrenome: "",
     dataNascimento: null,
     cpf: null,
     endereco: "",
     cidade: "",
-    cep: null,
     estado: "",
     pais: "",
     dataAposentadoria: null,
@@ -56,7 +55,8 @@ export class ParticipanteComponent implements OnInit {
     sexo: "",
     estadoCivil: "",
     telefone: null,
-    renda: null
+    renda: null,
+    dataProximoResgateNormal: null
   }
 
   private formSubmitAttempt: boolean;
@@ -66,7 +66,9 @@ export class ParticipanteComponent implements OnInit {
     public empresaService: EmpresaService,
     public http: HttpClient,
     private saldoService: SaldoService,
-    private participanteService: ParticipanteService
+    private participanteService: ParticipanteService,
+    private dateService: DateService,
+    private toastrService: ToastrService
   ) { }
 
   ngOnInit() {
@@ -83,12 +85,11 @@ export class ParticipanteComponent implements OnInit {
       dataNascimento: [''],
       cpf: ['', Validators.required],
       cidade: [''], 
-      cep: [''],
       estado: [''],
       pais: [''],
       idEmpresaFK: ['', Validators.required],
       dataAposentadoria: ['', Validators.required],
-      valorPortabilidade: [''],
+      saldoPortabilidade: [''],
       planoPortabilidade: [''],
       situacaoParticipante: ['', Validators.required],
       valorParcelaContribuicao:  ['', Validators.required],
@@ -96,7 +97,9 @@ export class ParticipanteComponent implements OnInit {
       estadoCivil: [''],
       telefone: [''],
       renda: [''],
-      idSaldoFK: ['']
+      idSaldoFK: [''],
+      carencia: [''],
+      dataProximoResgateNormal:['']
     })
   }
 
@@ -137,6 +140,7 @@ export class ParticipanteComponent implements OnInit {
   salvaParticipante() {
     this.formSubmitAttempt = true;
     if (!this.form.valid) {
+      this.toastrService.warning("Houve algum problema na gravação do registro.");
       console.log("Formulário inválido");
       return;
     }
@@ -144,8 +148,10 @@ export class ParticipanteComponent implements OnInit {
     this.saldoService.salva(this.saldo)
     .subscribe(response => {
       this.form.get('idSaldoFK').setValue(response['id']);
+      this.form.get('carencia').setValue(this.dateService.adicionaMeses(new Date(), 36));
       this.participanteService.salva(this.form.value)
       .subscribe(response => {
+        this.toastrService.success("Salvo com sucesso.");
         console.log('Salvo com sucesso! ' + response);
         this.reset()
       }, error => {

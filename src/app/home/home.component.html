@@ -1,6 +1,6 @@
 <body>
   <div class="hoverzoom">
-    <img src="../../assets/img/back.png">
+    <img class="img-fluid" src="../../assets/img/back.png">
     <div class="intro">
       <div class="text-intro">
         <h1>Previdência Complementar</h1>
@@ -10,9 +10,9 @@
       <div class="col-md-6 offset-md-3">
         <label for="participante">Participante:</label>
         <div class="input-group-append">
-          <input type="text" class="form-control" id="inputParticipante" value="{{participante?.nome}}" 
-            placeholder="Digite ou selecione um nome e pressione enter para consultar os dados...">
-          <button class="fa fa-search submit-lente" data-toggle="modal" data-target="#modalBusca"></button>
+          <input type="text" class="form-control" id="inputParticipante" [(ngModel)]="nomeParticipanteFiltro" (keyup.enter)="filtraParticipante()"
+            placeholder="Digite o nome do participante e clique na lupa para realizar a busca.">
+          <button class="fa fa-search submit-lente" data-toggle="modal" data-target="#modalBusca"  (click)="filtraParticipante()"></button>
         </div>
       </div>
       <button type="button" (click)="irParaSaldo()" class="btn btn-outline-secondary btnConsulta">
@@ -28,5 +28,6 @@
       <br>
     </div>
   </div>
-  <app-pesquisa-participante (respostaSelecao)="selecionaParticipante($event)"></app-pesquisa-participante>
+  <app-pesquisa-participante (respostaSelecao)="selecionaParticipante($event)" [participantes]="participantesFiltrados"></app-pesquisa-participante>
 </body>
+

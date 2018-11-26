@@ -9,29 +9,21 @@ import { ParticipanteService } from '../../../services/participante.service';
 })
 export class PesquisaParticipanteComponent implements OnInit {
 
-  participantes: ParticipanteDTO[];
   @Output() respostaSelecao = new EventEmitter();
+  @Input() participantes: ParticipanteDTO[];
 
   constructor(
     public participanteService: ParticipanteService
   ) { }
 
-  ngOnInit() {
-    this.carregaParticipantes();
-  }
-
-  carregaParticipantes() {
-    this.participanteService.buscaTodos()
-    .subscribe(response => {
-      this.participantes = response;
-    }, error => {
-      console.log(error);
-    });
-  }
+  ngOnInit() { }
 
   selecionaParticipanteTabela(participante: ParticipanteDTO){
     this.respostaSelecao.emit(participante);
   }
-  
+
+  buscaDescricaoParticipante(participante: ParticipanteDTO) {
+    return this.participanteService.buscaDescricaoSituacao(participante);
+  }
 
 }

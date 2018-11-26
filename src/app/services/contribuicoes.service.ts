@@ -6,7 +6,7 @@ import { ContribuicoesDTO } from '../model/saldo.dto';
 
 @Injectable()
 export class ContribuicoesService {
-
+  
   constructor(
     public http: HttpClient
   ) {}
@@ -16,13 +16,19 @@ export class ContribuicoesService {
   }
   
   salva(contribuicoes: ContribuicoesDTO) {
-    return this.http.post(
+    return this.http.post<ContribuicoesDTO>(
         `${API_CONFIG.baseUrl}contribuicoes`, 
-        contribuicoes,
-        { 
-          observe: 'response', 
-          responseType: 'text'
-        }
+        contribuicoes
     ); 
+  }
+
+  buscaDescricaoTipoContribuicao(contribuicao: ContribuicoesDTO) {
+    switch (contribuicao.tipo) {
+      case "0": 
+        return "Contribuição Normal";
+      case "1": 
+       return "Contribuição Adicional";
+    }
+    
   }
 }

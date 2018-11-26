@@ -7,6 +7,7 @@ import { ParticipanteDTO, EmpresaDTO } from '../model/participante.dto';
 import { ParticipanteService } from '../services/participante.service';
 import { EmpresaService } from '../services/empresa.service';
 
+
 @Component({
   selector: 'app-saldos',
   templateUrl: './saldos.component.html',
@@ -19,6 +20,7 @@ export class SaldosComponent implements OnInit {
   saldos: SaldoDTO[];
   saldo: SaldoDTO;
   empresa: EmpresaDTO;
+  descricaoSituacao: string;
   
   constructor(
     private router: Router,
@@ -40,8 +42,9 @@ export class SaldosComponent implements OnInit {
     .subscribe(response => {
       this.participante = response;
       this.carregaContribuicoes();
-      this.carregaSaldo();
+      this.carregaSaldo(this.participante.idSaldoFK);
       this.carregaEmpresa();
+      this.descricaoSituacao = this.participantesService.buscaDescricaoSituacao(this.participante);
     }, error => {
       console.log(error);
       this.router.navigate(["home"]);
@@ -57,8 +60,8 @@ export class SaldosComponent implements OnInit {
     });
   }
 
-  carregaSaldo() {
-    this.saldosService.buscaPorId(this.participante.idSaldoFK)
+  carregaSaldo(idSaldo: number) {
+    this.saldosService.buscaPorId(idSaldo)
     .subscribe(response => {
       this.saldo = response;
       this.saldo.saldoTotal = this.saldo.saldoContribuicoesAdicionais + this.saldo.saldoContribuicoesNormais + this.participante.saldoPortabilidade;
@@ -74,6 +77,10 @@ export class SaldosComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  } 
+
+  buscaDescricaoTipoContribuicao(contribuicao: ContribuicoesDTO) {
+    return this.contribuicoesService.buscaDescricaoTipoContribuicao(contribuicao);
   }
 
 }

@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <div class="row col-12 container-fluid">
   <div class="col-3">
-    <app-profile [participante]="participante" [empresa]="empresa" [saldo]="saldo"></app-profile>
+    <app-profile [participante]="participante" [empresa]="empresa" [saldo]="saldo" [contribuicoes]="contribuicoes" [descricaoSituacao]="descricaoSituacao"></app-profile>
   </div>
   <div class="col-9">
     <br>
@@ -11,39 +11,32 @@
     <div>
       <hr>
       <div class="row align-center">
-        <div class="col-2">
+        <div class="col-3">
           <span>
-            Saldo Atual:
+            Saldo Total:
            <br>
-           <p class="status-saldo">{{saldo?.saldoAtual}}</p>
+           <p class="status-saldo">{{saldo?.saldoTotal | currency:'BRL':'symbol':'0.2-2':'pt'}}</p>
           </span>
         </div>
-        <div class="col-2">
-          <span>
-            Saldo disponível retirada:
-            <br> 
-            <p class="status-saldo">{{saldo?.saldoDisponivelRetirada}}</p>
-          </span>
-        </div>
-        <div class="col-2">
+        <div class="col-3">
           <span>
             Saldo Portabilidade:
             <br> 
-            <p class="status-saldo2">{{participante?.saldoPortabilidade}}</p>
+            <p class="status-saldo2">{{participante?.saldoPortabilidade | currency:'BRL':'symbol':'0.2-2':'pt'}}</p>
           </span> 
         </div>
         <div class="col-3">
           <span>
             Saldo Contribuições normais:
             <br> 
-            <p class="status-saldo2">{{saldo?.saldoContribuicoesNormais}}</p>
+            <p class="status-saldo2">{{saldo?.saldoContribuicoesNormais | currency:'BRL':'symbol':'0.2-2':'pt'}}</p>
           </span>
         </div>
         <div class="col-3">
           <span>
             Saldo Contribuições adicionais:
             <br> 
-            <p class="status-saldo2">{{saldo?.saldoContribuicoesAdicionais}}</p>
+            <p class="status-saldo2">{{saldo?.saldoContribuicoesAdicionais | currency:'BRL':'symbol':'0.2-2':'pt'}}</p>
           </span>
         </div>
       </div>
@@ -51,21 +44,37 @@
       <br>
     </div>
     <h4>Essas são suas últimas contribuições:</h4>
-    <table class="table table-striped">
+    <table id="tabelaContribuicoes" class="table table-striped table-hover" cellspacing="0" [mfData]="contribuicoes" #mf="mfDataTable" [mfRowsOnPage]="7">
         <thead>
           <tr>
-            <th scope="col">Data</th>
-            <th scope="col">Tipo</th>
-            <th scope="col">Valor</th>
+            <th scope="col">
+              <mfDefaultSorter by="data">Data</mfDefaultSorter>
+            </th>
+            <th scope="col">
+              <mfDefaultSorter by="tipo">Tipo</mfDefaultSorter>
+            </th>
+            <th scope="col">
+              <mfDefaultSorter by="valor">Valor</mfDefaultSorter>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let contribuicao of contribuicoes">
-          <td>{{contribuicao.data}}</td>
-          <td>{{contribuicao.tipo}}</td>
-          <td>{{contribuicao.valor}}</td>
+          <tr *ngIf="contribuicoes?.length <= 0">
+            <td colspan="3">Nenhuma contribuição adicionada até o momento</td>
+          </tr>
+          <tr *ngFor="let contribuicao of mf.data">
+          <td>{{contribuicao.data | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+          <td>{{buscaDescricaoTipoContribuicao(contribuicao)}}</td>
+          <td>{{contribuicao.valor | currency:'BRL':'symbol':'0.2-2':'pt'}}</td>
           </tr>
         </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3">
+              <mfBootstrapPaginator></mfBootstrapPaginator>
+            </td>
+          </tr>
+        </tfoot>
       </table>
   </div>
 </div>

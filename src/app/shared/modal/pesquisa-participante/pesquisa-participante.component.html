@@ -8,7 +8,7 @@
           </button>
         </div>
         <div class="modal-body">
-            <table class="table table-bordered table-striped table-hover" id="selecao"> 
+            <table id="selecao" class="table table-bordered table-striped table-hover" [mfData]="participantes" #mf="mfDataTable" [mfRowsOnPage]="5"> 
                 <thead>
                   <tr>
                     <th scope="col">Nome</th>
@@ -18,13 +18,20 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let participante of participantes" (click)="selecionaParticipanteTabela(participante);" data-dismiss="modal">
+                  <tr *ngFor="let participante of mf.data" (click)="selecionaParticipanteTabela(participante);" data-dismiss="modal">
                     <td>{{participante.nome}}</td>
                     <td>{{participante.idEmpresaFK}}</td>
-                    <td>{{participante.dataNascimento}}</td>
-                    <td>{{participante.situacaoParticipante}}</td>
+                    <td>{{participante.dataNascimento | date: 'dd/MM/yyyy'}}</td>
+                    <td>{{buscaDescricaoParticipante(participante)}}</td>
                   </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                      <td colspan="4">
+                        <mfBootstrapPaginator></mfBootstrapPaginator>
+                      </td>
+                    </tr>
+                  </tfoot>
               </table>
         </div>
       </div>

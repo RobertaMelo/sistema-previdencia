@@ -3,7 +3,7 @@ import { ContribuicoesService } from '../../../services/contribuicoes.service';
 import { ParticipanteDTO } from '../../../model/participante.dto';
 import { ContribuicoesDTO, SaldoDTO } from '../../../model/saldo.dto';
 import { SaldoService } from '../../../services/saldo.service';
-import { DateService } from '../../../services/date.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-contribuicao-adicional',
@@ -12,12 +12,14 @@ import { DateService } from '../../../services/date.service';
 })
 export class ContribuicaoAdicionalComponent implements OnInit {
 
-  contribuicoes: ContribuicoesDTO[];
+
   @Input() participante: ParticipanteDTO;
   @Input() saldo: SaldoDTO;
+  @Input() contribuicoes: ContribuicoesDTO[];
+
   contribuicao: ContribuicoesDTO = {
     id: 0,
-    data: "",
+    data: null,
     tipo: "",
     valor: null,
     idParticipanteFk: 0,
@@ -28,24 +30,15 @@ export class ContribuicaoAdicionalComponent implements OnInit {
   constructor(
     private contribuicoesService: ContribuicoesService,
     private saldoService: SaldoService,
-    private dateService: DateService
+    private toastr: ToastrService
     ) { }
 
   ngOnInit() {
   }
 
-  carregaContribuicoes() {
-    this.contribuicoesService.buscaTodos()
-    .subscribe(response => {
-      this.contribuicoes = response.filter(contribuicao => contribuicao.idParticipanteFk == this.participante.id);
-    }, error => {
-      console.log(error);
-    });
-  }
-
   realizarContribuicao() {
     if (this.contribuicao.valor == null || this.contribuicao.tipo == "") {
-      console.log("Os valores estão vazios");
+      this.toastr.info("Informe os dados.");
       return; 
     }
     if (this.contribuicao.tipo == "0") {
@@ -55,23 +48,22 @@ export class ContribuicaoAdicionalComponent implements OnInit {
     }
     this.contribuicao.idParticipanteFk = this.participante.id;
     this.contribuicao.idSaldoFK = this.participante.idSaldoFK;
-    this.contribuicao.data = (this.dateService.formataData(new Date()));
-    this.saldo.saldoDisponivelRetirada += this.contribuicao.valor;
+    this.contribuicao.data = new Date();
     this.saldo.saldoTotal += this.contribuicao.valor;
 
     this.contribuicoesService.salva(this.contribuicao)
     .subscribe(response => {
+      this.contribuicoes.push(response);
+      console.log(this.saldo)
       this.saldoService.altera(this.saldo)
       .subscribe(response => {
         console.log('Salvo com sucesso! ' + response);
       }, error => {
         console.log(error);
       });
-      this.carregaContribuicoes();
     }, error => {
       console.log(error);
     });
     
   }
-
 }

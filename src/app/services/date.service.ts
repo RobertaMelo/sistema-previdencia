@@ -18,14 +18,18 @@ export class DateService {
   }
 
   adicionaAnos(data, quantidadeAnos) {
-    data.setYear(data.getYear() + quantidadeAnos);
+    data.setFullYear(data.getFullYear() + quantidadeAnos);
     return data;
   }
   
-  formataData(date) {
-    var day = date.getDate();
-    var monthIndex = date.getMonth();
-    var year = date.getFullYear();
-    return day + '/' + monthIndex + '/' + year;
+  isDataMaiorQueHoje(data) {
+    return data > new Date();
+  }
+
+  formataData(data) {
+    let day = data.getDate();
+    let month = data.getMonth();
+    let year = data.getFullYear();
+    return day + '/' + month + '/' + year;
   }
 }

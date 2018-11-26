@@ -14,6 +14,7 @@ import { ParticipanteService } from "../services/participante.service";
 import { ResgateService } from "../services/resgate.service";
 import { SaldoService } from "../services/saldo.service";
 import { DateService } from "../services/date.service";
+import { DataTableModule } from "angular-6-datatable";
 
 @NgModule ({
     declarations: [
@@ -24,7 +25,7 @@ import { DateService } from "../services/date.service";
         NavbarComponent, 
         ProfileComponent
     ],
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, DataTableModule],
     exports: [
         ContribuicaoAdicionalComponent, 
         PesquisaParticipanteComponent, 

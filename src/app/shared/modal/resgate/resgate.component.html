@@ -13,35 +13,43 @@
             <label for="tipoResgate">Selecione o Tipo de Resgate</label>
             <select class="custom-select" id="tipoResgate" [(ngModel)]="resgate.tipoResgate">
               <option value="0">Resgate Parcial</option>
-              <option value="1">Resgate total</option>
+              <option value="1">Resgate Total</option>
             </select> 
           </div>
           <div class="col-6">
             <label for="tipoResgate">Selecione o Tipo de saldo a ser resgatado </label>
             <select class="custom-select" id="tipoSaldoResgate" [(ngModel)]="resgate.tipoSaldoResgate" (change)="atualizaSaldoDisponivelRetirada()"> 
-              <option value="0">Resgate saldo portabilidade</option>
-              <option value="1">Resgate saldo contribuições normais</option>
-              <option value="2">Resgate saldo contribuições adicionais</option>
+              <option value="0">Resgate Saldo Portabilidade</option>
+              <option value="1">Resgate Saldo Contribuições Normais</option>
+              <option value="2">Resgate Saldo Contribuições Adicionais</option>
               <option value="3">Resgate Total</option>
             </select>
           </div>  
+        </div>
+        <div *ngIf="resgate.tipoResgate != '' && resgate.tipoResgate == 0">
+          <div class="row">
+            <div class="col-12">
+              <label for="valorResgateParcial">Valor Parcial a ser Retirado</label>
+              <input type="number" class="form-control" id="valorResgateParcial" [(ngModel)]="resgate.valorResgateParcial" size="60" required>
+            </div>
+          </div>
         </div>
         <label for="opcaoPagamentoParcelado">Deseja que o pagamento do resgate seja parcelado?</label>
         <select class="custom-select" id="opcaoPagamentoParcelado" [(ngModel)]="resgate.opcaoPagamentoParcelado">
           <option value="0">Sim</option>
           <option value="1">Não</option>
-          <option value="2">Selecione...</option>
         </select> 
         <br>
         <div *ngIf="resgate.opcaoPagamentoParcelado == 0">
           <div class="row">
             <div class="col-6">
                 <label for="quantidadeParcelaResgate">Quantidade de Parcelas Pagamento Resgate</label>
-                <input type="number" class="form-control" id="quantidadeParcelaResgate" size="60" required>
+                <input type="number" class="form-control" id="quantidadeParcelaResgate" size="60"  
+                  [(ngModel)]="resgate.quantidadeParcelaResgate" (change)="calculaValorParcela()" required>
               </div>
               <div class="col-6">
                 <label for="valorParcelaResgate">Valor Parcelas</label>
-                <input type="number" class="form-control" id="valorParcelaResgate" pattern="([0-9]{1,3}\.)?[0-9]{1,3},[0-9]{2}$" value="resgate?.valorParcelaResgate" readonly>
+                <input type="number" class="form-control" id="valorParcelaResgate" [(ngModel)]="resgate.valorParcelaResgate" readonly>
             </div>
           </div>
         </div>
@@ -49,12 +57,6 @@
           <br>
           <div class="card">
             <div class="card-body">
-              <div class="row">
-                <div class="col-12">
-                  <label for="valorResgateParcial">Valor Parcial a ser Retirado</label>
-                  <input type="number" class="form-control" id="valorResgateParcial" size="60" required>
-                </div>
-              </div>
               <br>
               <div class="card">
                 <div class="card-body">
@@ -77,8 +79,8 @@
       <br>
       <div class="card">
         <div class="card-body">
-          <b>Valor disponível para retirada:</b> <br><span class="total"><b>{{saldo?.saldoDisponivelRetirada}}</b></span><br>
-          <b>Data liberação:</b> <br><span class="total"><b>{{resgate?.dataLiberacaoResgate}}</b></span>
+          <b>Valor disponível para retirada:</b> <br><span class="total"><b>{{saldoDisponivelRetirada | currency:'BRL':'symbol':'0.2-2':'pt'}}</b></span><br>
+          <b>Data liberação:</b> <br><span class="total"><b>{{resgate?.dataLiberacaoResgate | date: 'dd/MM/yyyy'}}</b></span>
         </div>
       </div>
       <div class="btn">

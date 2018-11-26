@@ -22,14 +22,10 @@ export class SaldoService {
     ); 
   }
 
-  altera(saldo: SaldoDTO) {
+  altera( saldo : SaldoDTO) {
     return this.http.put(
-      `${API_CONFIG.baseUrl}saldo`, 
-      saldo,
-      { 
-          observe: 'response', 
-          responseType: 'text'
-      }
+      `${API_CONFIG.baseUrl}saldo/${saldo.id}`, 
+      saldo
     ); 
   }
 }

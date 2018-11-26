@@ -10,14 +10,14 @@
           <ul class="list-unstyled components menu-area">
           <br>
               <p class="usuario-name">{{participante?.nome}} {{participante?.sobrenome}}</p>
-              <span>Situação: <p class="status">{{participante?.situacaoParticipante}}</p></span>
+              <span>Situação: <p class="status">{{descricaoSituacao}}</p></span>
               <hr>
               <li class="active menu">
                   <span>Empresa: <br> <p class="status">{{empresa?.razaoSocial}}</p></span>
                   <hr>
-                  <span>Carência:<br> <p class="status">{{participante?.carencia}}</p></span>
+                  <span>Carência:<br> <p class="status">{{participante?.carencia | date:'dd/MM/yyyy'}}</p></span>
                   <hr>
-                  <span>Data aposentadoria: <br> <p class="status">{{participante?.dataAposentadoria}}</p></span>
+                  <span>Data aposentadoria: <br> <p class="status">{{participante?.dataAposentadoria | date:'dd/MM/yyyy'}}</p></span>
                   <hr>
                   <div class="row btn">
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalContribuicaoAdicional">Contribuição Adicional</button>
@@ -29,6 +29,6 @@
           </ul>
       </nav>
   </div>
-  <app-contribuicao-adicional [participante]="participante" [saldo]="saldo"></app-contribuicao-adicional>
+  <app-contribuicao-adicional [participante]="participante" [saldo]="saldo" [contribuicoes]="contribuicoes"></app-contribuicao-adicional>
   <app-resgate [participante]="participante" [saldo]="saldo"></app-resgate>
 </div>

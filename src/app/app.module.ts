@@ -12,6 +12,11 @@ import { SaldosComponent } from './saldos/saldos.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { SharedModule } from './shared/shared.module';
 import { ToastrModule } from 'ngx-toastr';
+import { DataTableModule } from "angular-6-datatable";
+
+import localePt from '@angular/common/locales/pt';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localePt);
 
 @NgModule({
   declarations: [
@@ -27,6 +32,7 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    DataTableModule,
     ToastrModule.forRoot(),
     SharedModule.forRoot(),
     NgxMaskModule.forRoot()
