@@ -33,7 +33,7 @@ registerLocaleData(localePt);
     HttpClientModule,
     BrowserAnimationsModule,
     DataTableModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({ timeOut: 6000 }),
     SharedModule.forRoot(),
     NgxMaskModule.forRoot()
   ],

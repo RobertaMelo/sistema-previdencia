@@ -23,7 +23,8 @@ export class DateService {
   }
   
   isDataMaiorQueHoje(data) {
-    return data > new Date();
+    let dataAtual = new Date()
+    return data > dataAtual;
   }
 
   formataData(data) {

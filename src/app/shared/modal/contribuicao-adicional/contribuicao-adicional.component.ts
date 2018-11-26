@@ -57,6 +57,7 @@ export class ContribuicaoAdicionalComponent implements OnInit {
       console.log(this.saldo)
       this.saldoService.altera(this.saldo)
       .subscribe(response => {
+        this.toastr.success("Contribuição realizada com sucesso!")
         console.log('Salvo com sucesso! ' + response);
       }, error => {
         console.log(error);

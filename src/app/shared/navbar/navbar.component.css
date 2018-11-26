@@ -4,12 +4,21 @@
 }
 
 .text {
-    color: white;
-    margin-left: 10px;
+    display: inline-block;
+    padding-left: 30px;
+    padding-right: 30px;
+    line-height: 50px;
+    font-size: 22px;
+    font-weight: 100;
 }
 
 .separator {
     margin:0;
     padding:0;
     background-color: white;
+}
+
+a {
+    text-decoration: none;
+    color: white;
 }

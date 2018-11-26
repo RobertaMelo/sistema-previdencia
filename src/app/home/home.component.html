@@ -11,11 +11,11 @@
         <label for="participante">Participante:</label>
         <div class="input-group-append">
           <input type="text" class="form-control" id="inputParticipante" [(ngModel)]="nomeParticipanteFiltro" (keyup.enter)="filtraParticipante()"
-            placeholder="Digite o nome do participante e clique na lupa para realizar a busca.">
-          <button class="fa fa-search submit-lente" data-toggle="modal" data-target="#modalBusca"  (click)="filtraParticipante()"></button>
+            placeholder="Digite o nome do participante e/ou clique na busca.">
+          <button type="button" class="btn btn-outline-secondary btnConsulta alinhamento2" data-toggle="modal" data-target="#modalBusca"  (click)="filtraParticipante()">Buscar Participante</button>
         </div>
       </div>
-      <button type="button" (click)="irParaSaldo()" class="btn btn-outline-secondary btnConsulta">
+      <button type="button" (click)="irParaSaldo()" class="btn btn-outline-secondary btnConsulta alinhamento">
         Consultar Saldo
       </button>
       <br><br><br>

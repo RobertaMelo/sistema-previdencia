@@ -49,14 +49,15 @@ export class ResgateComponent implements OnInit {
 
   calculaValorParcela() {
 
-    if (this.resgate.quantidadeParcelaResgate > 0)
-      if (this.resgate.opcaoPagamentoParcelado == "0") {
+    if (this.resgate.opcaoPagamentoParcelado == "0") {
+      if (this.resgate.tipoResgate == "0") {
         this.resgate.valorParcelaResgate = Number((this.resgate.valorResgateParcial / this.resgate.quantidadeParcelaResgate).toFixed(2));
-      } else {
+        return;
+      } 
+      if (this.resgate.tipoResgate == "1") {
         this.resgate.valorParcelaResgate = Number((this.saldoDisponivelRetirada / this.resgate.quantidadeParcelaResgate).toFixed(2));
-    } else {
-      this.toastrService.warning("Escolha a quantidade de parcelas para continuar."); 
-      return;
+        return;
+      } 
     }
 
   }
@@ -103,7 +104,6 @@ export class ResgateComponent implements OnInit {
       this.participante.saldoPortabilidade -= this.resgate.valorResgateParcial;
       this.saldo.saldoTotal -= this.resgate.valorResgateParcial;
       this.saldoDisponivelRetirada -= this.resgate.valorResgateParcial;
-      this.toastrService.info("Os valores pertinentes ao resgate serão liberados a partir de: " + this.dateService.formataData(this.dateService.adicionaDias(new Date(), 30)));
       return;
     }
 
@@ -117,17 +117,10 @@ export class ResgateComponent implements OnInit {
     this.participante.saldoPortabilidade -= this.saldoDisponivelRetirada;
     this.saldo.saldoTotal -= this.saldoDisponivelRetirada;
     this.saldoDisponivelRetirada = 0;
-    this.toastrService.info("Os valores pertinentes ao resgate serão liberados a partir de: " + this.dateService.formataData(this.dateService.adicionaDias(new Date(), 30)));
+
   }
 
   resgateContribuicaoNormal() {
-
-    if (this.participante.dataProximoResgateNormal != null && this.participante.dataProximoResgateNormal != undefined &&
-      this.dateService.isDataMaiorQueHoje(this.participante.dataProximoResgateNormal)) {
-      this.toastrService.error("O resgate não pode ser realizado dentro do período de 2 anos, após o ultimo resgate. Você poderá realizar um novo resgate a partir de: " 
-       + this.dateService.formataData(this.participante.dataProximoResgateNormal));
-      return;
-    }
 
     if (this.resgate.tipoResgate == "0") { // resgate parcial contribuicao normal 
 
@@ -139,7 +132,6 @@ export class ResgateComponent implements OnInit {
           this.saldo.saldoContribuicoesNormais -= this.resgate.valorResgateParcial;
           this.saldo.saldoTotal -= this.resgate.valorResgateParcial;
           this.saldoDisponivelRetirada -= this.resgate.valorResgateParcial;
-          this.toastrService.info("Os valores pertinentes ao resgate serão liberados a partir de: " + this.dateService.formataData(this.dateService.adicionaDias(new Date(), 30)));
           return;
         } else {    
           this.toastrService.error("O saldo do resgate parcial não pode ser igual ao valor total disponível.");
@@ -152,7 +144,6 @@ export class ResgateComponent implements OnInit {
       this.saldo.saldoContribuicoesNormais -= this.resgate.valorResgateParcial;
       this.saldo.saldoTotal -= this.resgate.valorResgateParcial;
       this.saldoDisponivelRetirada -= this.resgate.valorResgateParcial;
-      this.toastrService.info("Os valores pertinentes ao resgate serão liberados a partir de: " + this.dateService.formataData(this.dateService.adicionaDias(new Date(), 30)));
 
     }
 
@@ -164,7 +155,6 @@ export class ResgateComponent implements OnInit {
         this.saldo.saldoContribuicoesNormais -= this.saldoDisponivelRetirada;
         this.saldo.saldoTotal -= this.saldoDisponivelRetirada;
         this.saldoDisponivelRetirada = 0;
-        this.toastrService.info("Os valores pertinentes ao resgate serão liberados a partir de: " + this.dateService.formataData(this.dateService.adicionaDias(new Date(), 30)));
         return;
       } 
 
@@ -173,7 +163,6 @@ export class ResgateComponent implements OnInit {
       this.saldo.saldoContribuicoesNormais -= this.saldoDisponivelRetirada;
       this.saldo.saldoTotal -= this.saldoDisponivelRetirada;
       this.saldoDisponivelRetirada = 0;
-      this.toastrService.info("Os valores pertinentes ao resgate serão liberados a partir de: " + this.dateService.formataData(this.dateService.adicionaDias(new Date(), 30)));
       return;
     }
   }
@@ -194,7 +183,6 @@ export class ResgateComponent implements OnInit {
       this.saldo.saldoContribuicoesAdicionais -= this.resgate.valorResgateParcial;
       this.saldo.saldoTotal -= this.resgate.valorResgateParcial;
       this.saldoDisponivelRetirada -= this.resgate.valorResgateParcial;
-      this.toastrService.info("Os valores pertinentes ao resgate serão liberados a partir de: " + this.dateService.formataData(this.dateService.adicionaDias(new Date(), 30)));
       return;
     }
 
@@ -208,7 +196,7 @@ export class ResgateComponent implements OnInit {
     this.saldo.saldoContribuicoesAdicionais -= this.saldoDisponivelRetirada;
     this.saldo.saldoTotal -= this.saldoDisponivelRetirada;
     this.saldoDisponivelRetirada = 0;
-    this.toastrService.info("Os valores pertinentes ao resgate serão liberados a partir de: " + this.dateService.formataData(this.dateService.adicionaDias(new Date(), 30)));
+    
   }
   
   resgateTotal() {
@@ -234,6 +222,15 @@ export class ResgateComponent implements OnInit {
   }
 
   validaResgate() {
+
+    if (this.resgate.tipoSaldoResgate == "1") {
+      if (this.participante.dataProximoResgateNormal != null && this.participante.dataProximoResgateNormal != undefined &&
+        this.dateService.isDataMaiorQueHoje(new Date(this.participante.dataProximoResgateNormal))) {
+        this.toastrService.error("O resgate não pode ser realizado dentro do período de 2 anos, após o ultimo resgate. Você poderá realizar um novo resgate a partir de: " 
+         + this.dateService.formataData(new Date(this.participante.dataProximoResgateNormal)));
+        return;
+      }
+    }
 
     if (this.resgate.tipoResgate == "0" && this.resgate.tipoSaldoResgate == "3") {
       this.toastrService.warning("Não é possível realizar saque parcial do resgate total.")
@@ -302,6 +299,7 @@ export class ResgateComponent implements OnInit {
 
     this.resgate.idParticipanteFk = this.participante.id;
     this.resgate.dataResgate = new Date();
+    this.resgate.dataLiberacaoResgate =  (this.dateService.adicionaDias(new Date(), 30));
 
     this.resgateService.salva(this.resgate)
     .subscribe(() => {
@@ -317,6 +315,7 @@ export class ResgateComponent implements OnInit {
       }, error => {
         console.log(error);
       });
+      this.toastrService.success("O resgate foi realizado com sucesso.");
       this.limpaFormulario();
     }, error => {
       console.log(error);

@@ -74,20 +74,6 @@ h1 {
     position: relative;
 }
 
-.submit-lente {
-    position:absolute;
-    top:38px;
-    right: 9px;
-    background:rgb(196, 193, 193); 
-    border-radius: 5px;
-    height: 50%;
-    width: 5%;
-    border:none;
-    color: white;
-    margin-left: 5px;
-    padding-left: 5px;
-}
-  
 .bttn {
     color: #292929;
     background-color:  rgb(23, 55, 97);
@@ -96,5 +82,12 @@ h1 {
 .btnConsulta {
    color: white;
    border-color: white;
-   margin-top: 15px; 
+}
+
+.alinhamento {
+    margin-top: 15px;
+}
+
+.alinhamento2 {
+    margin-left: 3px;
 }
